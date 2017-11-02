@@ -1,0 +1,554 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!-- three.js library  https://jeromeetienne.github.io/AR.js/three.js/examples/vendor/three.js/build/three.min.js -->
+    <!--https://www.script-tutorials.com/demos/372/js/-->
+	<script src="three.min.js"></script>
+    <script src="https://jeromeetienne.github.io/AR.js/three.js/examples/vendor/three.js/examples/js/libs/stats.min.js"></script>
+    <!-- ar.js -->
+    <script src="https://jeromeetienne.github.io/AR.js/three.js/build/ar.js"></script>
+    <script>
+        THREEx.ArToolkitContext.baseURL = ''
+    </script>
+</head>
+
+<body style="margin : 0px; overflow: hidden; font-family: Monospace;">
+    <script>
+        /**
+         *
+         * Christmas tree with three.js
+         *
+         * Licensed under the MIT license.
+         * http://www.opensource.org/licenses/mit-license.php
+         * 
+         * Copyright 2013, Script Tutorials
+         * http://www.script-tutorials.com/
+         */
+		 THREE.ImageUtils.generateDataTexture= function ( width, height, color ) {
+
+		var size = width * height;
+		var data = new Uint8Array( 3 * size );
+
+		var r = Math.floor( color.r * 255 );
+		var g = Math.floor( color.g * 255 );
+		var b = Math.floor( color.b * 255 );
+
+		for ( var i = 0; i < size; i ++ ) {
+
+			data[ i * 3 ] 	   = r;
+			data[ i * 3 + 1 ] = g;
+			data[ i * 3 + 2 ] = b;
+
+		}
+
+		var texture = new THREE.DataTexture( data, width, height, THREE.RGBFormat );
+		texture.needsUpdate = true;
+
+		return texture;
+
+	}
+	
+        var xmasTree = {
+           // container: null,
+            camera: null,
+            scene: null,
+            renderer: null,
+            group: null,
+            targetRotation: 0,
+            targetRotationOnMouseDown: 0,
+            mouseX: 0,
+            mouseXOnMouseDown: 0,
+            windowHalfX: 640 / 2,
+            windowHalfY: 480 / 2,
+            materials: [],
+            addBranch: function(count, x, y, z, opts, material, rotate) {
+
+                // prepare star-like points
+                var points = [],
+                    l;
+                for (i = 0; i < count * 2; i++) {
+                    if (i % 2 == 1) {
+                        l = count * 2;
+                    } else {
+                        l = count * 4;
+                    }
+                    var a = i / count * Math.PI;
+                    points.push(new THREE.Vector2(Math.cos(a) * l, Math.sin(a) * l));
+
+                    if (rotate && i % 2 == 0) {
+                        var sphGeometry = new THREE.SphereGeometry(8);
+                        sphMesh = new THREE.Mesh(sphGeometry, this.materials[0]);
+                        sphMesh.position.set(Math.cos(a) * l * 1.25, y, Math.sin(a) * l * 1.25);
+                        this.group.add(sphMesh);
+                    }
+                }
+
+                var branchShape = new THREE.Shape(points);
+                var branchGeometry = new THREE.ExtrudeGeometry(branchShape, opts);
+                var branchMesh = new THREE.Mesh(branchGeometry, material);
+
+                branchMesh.position.set(x, y, z);
+
+                // rotate 90 degrees
+                if (rotate) {
+                    branchMesh.rotation.set(Math.PI / 2, 0, 0);
+                } else {
+                    branchMesh.rotation.set(0, 0, Math.PI / 2);
+                }
+
+                // add branch to the group
+                this.group.add(branchMesh);
+            },
+
+
+            init: function() {
+
+                // prepare the container
+                //this.container = document.createElement('div');
+                //document.body.appendChild(this.container);
+
+                // initialize the scene
+                this.scene = new THREE.Scene();
+
+                // add the fog
+  //              this.scene.fog = new THREE.Fog(0xcce0ff, 500, 10000);
+
+                // set the camera
+                this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+                this.camera.position.set(0, 100, 500);
+                this.scene.add(this.camera);
+
+                // create the empty scene group
+                this.group = new THREE.Object3D();
+                this.scene.add(this.group);
+
+                // prepare materials
+                var imgTexture = THREE.ImageUtils.loadTexture('texture.jpg');
+                imgTexture.repeat.set(1, 1);
+                imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
+                imgTexture.anisotropy = 16;
+                imgTexture.needsUpdate = true;
+
+                var shininess = 50,
+                    specular = 0x333333,
+                    bumpScale = 1,
+                    shading = THREE.SmoothShading;
+
+                this.materials.push(new THREE.MeshPhongMaterial({
+                    map: imgTexture,
+                    bumpMap: imgTexture,
+                    bumpScale: bumpScale,
+                    color: 0xff0000,
+                    ambient: 0xffffff,
+                    specular: specular,
+                    shininess: shininess,
+                    shading: shading
+                }));
+                this.materials.push(new THREE.MeshPhongMaterial({
+                    map: imgTexture,
+                    color: 0x008800,
+                    ambient: 0xffffff,
+                    specular: specular,
+                    shininess: shininess,
+                    shading: shading
+                }));
+                this.materials.push(new THREE.MeshPhongMaterial({
+                    map: imgTexture,
+                    color: 0x584000,
+                    ambient: 0xffffff,
+                    shading: shading
+                }));
+                this.materials.push(new THREE.MeshPhongMaterial({
+                    map: imgTexture,
+                    color: 0xff0000,
+                    ambient: 0xffffff,
+                    shading: shading
+                }));
+
+                // add the Trunk
+                var trunk = new THREE.Mesh(new THREE.CylinderGeometry(2, 20, 300, 30, 1, false), this.materials[2]);
+                this.group.add(trunk);
+
+                // add branch function
+                // options
+                var options = {
+                    amount: 6,
+                    bevelEnabled: true,
+                    bevelSegments: 5,
+                    steps: 2
+                };
+
+                // add 10 branches
+                var iBranchCnt = 14;
+                for (i1 = 0; i1 < iBranchCnt; i1++) {
+                    this.addBranch(iBranchCnt + 3 - i1, 0, -125 + i1 * 20, 0, options, this.materials[1], true);
+                }
+
+                // add the star
+                var starOpts = {
+                    amount: 4,
+                    bevelEnabled: false
+                };
+                this.addBranch(5, 0, 160, -2, starOpts, this.materials[3], false);
+
+                // add the ground
+/*
+                var groundColor = new THREE.Color(0xd2ddef);
+                var groundTexture = THREE.ImageUtils.generateDataTexture(1, 1, groundColor);
+                var groundMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xffffff,
+                    specular: 0x111111,
+                    map: groundTexture
+                });
+
+                var groundTexture = THREE.ImageUtils.loadTexture('ground.jpg', undefined, function() {
+                    groundMaterial.map = groundTexture
+                });
+                groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+                groundTexture.repeat.set(25, 25);
+                groundTexture.anisotropy = 16;
+
+                var groundMesh = new THREE.Mesh(new THREE.PlaneGeometry(20000, 20000), groundMaterial);
+                groundMesh.position.y = -150;
+                groundMesh.rotation.x = -Math.PI / 2;
+                this.group.add(groundMesh);
+*/
+
+                // add snowflakes
+                /*var sfMats = [];
+                var sfTexture = THREE.ImageUtils.loadTexture('snowflake.png');
+                var sfGeometry = new THREE.Geometry();
+                for (i = 0; i < 10000; i++) {
+                    var vertex = new THREE.Vector3();
+                    vertex.x = Math.random() * 2000 - 1000;
+                    vertex.y = Math.random() * 2000 - 1000;
+                    vertex.z = Math.random() * 2000 - 1000;
+
+                    sfGeometry.vertices.push(vertex);
+                }
+
+                var states = [
+                    [
+                        [1.0, 0.2, 0.9], sfTexture, 10
+                    ],
+                    [
+                        [0.90, 0.1, 0.5], sfTexture, 8
+                    ],
+                    [
+                        [0.80, 0.05, 0.5], sfTexture, 5
+                    ]
+                ];
+				
+                for (i = 0; i < states.length; i++) 
+				{
+                    color = states[i][0];
+                    sprite = states[i][1];
+                    size = states[i][2];
+
+                    sfMats[i] = new THREE.ParticleSystemMaterial({
+                        size: size,
+                        map: sprite,
+                        blending: THREE.AdditiveBlending,
+                        depthTest: false,
+                        transparent: true
+                    });
+                    sfMats[i].color.setHSL(color[0], color[1], color[2]);
+
+                    particles = new THREE.ParticleSystem(sfGeometry, sfMats[i]);
+
+                    particles.rotation.x = Math.random() * 10;
+                    particles.rotation.y = Math.random() * 10;
+                    particles.rotation.z = Math.random() * 10;
+
+                    this.group.add(particles);
+                }
+*/
+               
+			   // Add lights:
+
+                // add ambient (global) light
+                this.scene.add(new THREE.AmbientLight(0x222222));
+
+                // add particle of light
+                this.particleLight = new THREE.Mesh(new THREE.SphereGeometry(5, 10, 10), new THREE.MeshBasicMaterial({
+                    color: 0xffffff
+                }));
+                this.particleLight.position.y = 250;
+                this.group.add(this.particleLight);
+
+                // add flying pint light
+                pointLight = new THREE.PointLight(0xffffff, 1, 1000);
+                this.group.add(pointLight);
+
+                pointLight.position = this.particleLight.position;
+
+                // add directional blue light
+                var directionalLight = new THREE.DirectionalLight(0x0000ff, 2);
+                directionalLight.position.set(10, 1, 1).normalize();
+                this.group.add(directionalLight);
+
+                // prepare the render object and render the scene
+                this.renderer = new THREE.WebGLRenderer({
+                    antialias: true,
+                    alpha: true
+                });
+                //this.renderer.setClearColor(this.scene.fog.color);
+				this.renderer.setClearColor(new THREE.Color('lightgrey'), 0);
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                //this.renderer.setSize( 640, 480 );
+				this.renderer.domElement.style.position = 'absolute'
+				this.renderer.domElement.style.top = '0px'
+				this.renderer.domElement.style.left = '0px'
+				//this.container.appendChild(this.renderer.domElement);
+				document.body.appendChild(this.renderer.domElement )
+
+                //this.renderer.gammaInput = true;
+                //this.renderer.gammaOutput = true;
+                //this.renderer.physicallyBasedShading = true;
+
+                // add events handlers
+                //document.addEventListener('mousedown', this.onDocumentMouseDown, false);
+                //document.addEventListener('touchstart', this.onDocumentTouchStart, false);
+                //document.addEventListener('touchmove', this.onDocumentTouchMove, false);
+                //window.addEventListener('resize', this.onWindowResize, false);
+            },
+            onWindowResize: function() {
+
+                xmasTree.windowHalfX = window.innerWidth / 2;
+                xmasTree.windowHalfY = window.innerHeight / 2;
+
+                xmasTree.camera.aspect = window.innerWidth / window.innerHeight;
+                xmasTree.camera.updateProjectionMatrix();
+
+                xmasTree.renderer.setSize(window.innerWidth - 20, window.innerHeight - 20);
+            },
+            onDocumentMouseDown: function(event) {
+                event.preventDefault();
+
+                document.addEventListener('mousemove', xmasTree.onDocumentMouseMove, false);
+                document.addEventListener('mouseup', xmasTree.onDocumentMouseUp, false);
+                document.addEventListener('mouseout', xmasTree.onDocumentMouseOut, false);
+
+                xmasTree.mouseXOnMouseDown = event.clientX - xmasTree.windowHalfX;
+                xmasTree.targetRotationOnMouseDown = xmasTree.targetRotation;
+            },
+            onDocumentMouseMove: function(event) {
+                xmasTree.mouseX = event.clientX - xmasTree.windowHalfX;
+                xmasTree.targetRotation = xmasTree.targetRotationOnMouseDown + (xmasTree.mouseX - xmasTree.mouseXOnMouseDown) * 0.02;
+            },
+            onDocumentMouseUp: function(event) {
+                document.removeEventListener('mousemove', xmasTree.onDocumentMouseMove, false);
+                document.removeEventListener('mouseup', xmasTree.onDocumentMouseUp, false);
+                document.removeEventListener('mouseout', xmasTree.onDocumentMouseOut, false);
+            },
+            onDocumentMouseOut: function(event) {
+                document.removeEventListener('mousemove', xmasTree.onDocumentMouseMove, false);
+                document.removeEventListener('mouseup', xmasTree.onDocumentMouseUp, false);
+                document.removeEventListener('mouseout', xmasTree.onDocumentMouseOut, false);
+            },
+            onDocumentTouchStart: function(event) {
+                if (event.touches.length == 1) {
+                    event.preventDefault();
+
+                    xmasTree.mouseXOnMouseDown = event.touches[0].pageX - xmasTree.windowHalfX;
+                    xmasTree.targetRotationOnMouseDown = xmasTree.targetRotation;
+                }
+            },
+            onDocumentTouchMove: function(event) {
+                if (event.touches.length == 1) {
+                    event.preventDefault();
+
+                    mouseX = event.touches[0].pageX - xmasTree.windowHalfX;
+                    xmasTree.targetRotation = xmasTree.targetRotationOnMouseDown + (xmasTree.mouseX - xmasTree.mouseXOnMouseDown) * 0.02;
+                }
+            },
+            animate: function() {
+                xmasTree.render();
+            },
+            render: function() {
+                var timer = Date.now() * 0.00025;
+
+                //xmasTree.group.rotation.x += (xmasTree.targetRotation - xmasTree.group.rotation.y) * 0.01;
+
+	//			xmasTree.group.rotation.x =Math.cos(timer * 3) * 300;
+/*
+                xmasTree.particleLight.position.y = Math.sin(timer * 7) * 300;
+                xmasTree.particleLight.position.z = Math.cos(timer * 3) * 300;
+*/
+               xmasTree.camera.position.y = 0;
+   //             xmasTree.camera.position.z = Math.sin(timer) * 500;
+                xmasTree.camera.lookAt(xmasTree.scene.position);
+
+                xmasTree.renderer.render(xmasTree.scene, xmasTree.camera);
+            }
+        }
+        // initialize and start animation
+        //xmasTree.init();
+        //-xmasTree.animate();
+
+       
+	   //////////////////////////////////////////////////////////////////////////////////
+		//		Init
+		//////////////////////////////////////////////////////////////////////////////////
+		// init renderer
+		xmasTree.init();
+		var renderer	= new THREE.WebGLRenderer({
+			//antialias	: true,
+			alpha: true
+		});
+		renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.domElement.style.position = 'absolute'
+		renderer.domElement.style.top = '0px'
+		renderer.domElement.style.left = '0px'
+		document.body.appendChild( renderer.domElement );		
+		
+		// array of functions for the rendering loop
+		var onRenderFcts= [];
+		// init scene and camera
+		var scene	= new THREE.Scene();
+		
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Initialize a basic camera
+		//////////////////////////////////////////////////////////////////////////////////
+		// Create a camera
+		var camera = new THREE.Camera();
+		scene.add(camera);
+		
+		////////////////////////////////////////////////////////////////////////////////
+		//          handle arToolkitSource
+		////////////////////////////////////////////////////////////////////////////////
+		
+		var arToolkitSource = new THREEx.ArToolkitSource({
+			// to read from the webcam 
+			sourceType : 'webcam',
+			
+			// to read from an image
+			// sourceType : 'image',
+			// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',		
+			// to read from a video
+			//sourceType : 'video',
+			//sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',		
+		})
+		arToolkitSource.init(function onReady(){
+			onResize()
+		})
+		
+		// handle resize
+		window.addEventListener('resize', function(){
+			onResize()
+		})
+		function onResize(){
+			arToolkitSource.onResize()	
+			//arToolkitSource.copySizeTo(renderer.domElement)
+			arToolkitSource.copySizeTo(xmasTree.renderer.domElement)			
+			if( arToolkitContext.arController !== null ){
+				arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
+			}	
+		}
+		////////////////////////////////////////////////////////////////////////////////
+		//          initialize arToolkitContext
+		////////////////////////////////////////////////////////////////////////////////	
+		// create atToolkitContext
+		var arToolkitContext = new THREEx.ArToolkitContext({
+			//cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
+			cameraParametersUrl: 'camera_para.js',
+			detectionMode: 'mono',
+			maxDetectionRate: 30,
+			canvasWidth: 80*3,
+			canvasHeight: 60*3,
+		})
+		// initialize it
+		arToolkitContext.init(function onCompleted(){
+			// copy projection matrix to camera
+			camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+			//xmasTree.camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+		})
+		// update artoolkit on every frame
+		onRenderFcts.push(function(){
+			if( arToolkitSource.ready === false )	return
+			arToolkitContext.update( arToolkitSource.domElement )
+		});
+		
+		
+		////////////////////////////////////////////////////////////////////////////////
+		//          Create a ArMarkerControls
+		////////////////////////////////////////////////////////////////////////////////
+		
+		var markerRoot = new THREE.Group
+		scene.add(markerRoot);		
+		var artoolkitMarker = new THREEx.ArMarkerControls(arToolkitContext, 
+		//markerRoot 
+		xmasTree.group
+		, {
+			type : 'pattern',
+			patternUrl : 'patt.hiro.js',
+			//patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.kanji',
+		})
+		// build a smoothedControls
+		var smoothedRoot = new THREE.Group
+		scene.add(smoothedRoot)
+		var smoothedControls = new THREEx.ArSmoothedControls(smoothedRoot, {
+			lerpPosition: 0.4,
+			lerpQuaternion: 0.3,
+			lerpScale: 1,
+		})
+		onRenderFcts.push(function(delta){
+			//smoothedControls.update(markerRoot);
+			smoothedControls.update(xmasTree.group)
+		})
+		//////////////////////////////////////////////////////////////////////////////////
+		//		add an object in the scene
+		//////////////////////////////////////////////////////////////////////////////////
+		
+		var arWorldRoot = smoothedRoot
+		// add a torus knot	
+		
+		var geometry	= new THREE.CubeGeometry(1,1,1);
+		var material	= new THREE.MeshNormalMaterial({
+			transparent : true,
+			opacity: 0.5,
+			side: THREE.DoubleSide
+		}); 
+		var mesh	= new THREE.Mesh( geometry, material );
+		mesh.position.y	= geometry.height/2
+		markerRoot.add( mesh );
+		
+		var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,64,16);
+		var material	= new THREE.MeshNormalMaterial(); 
+		var mesh	= new THREE.Mesh( geometry, material );
+		mesh.position.y	= 0.5
+		markerRoot.add( mesh );
+		
+		/*onRenderFcts.push(function(){
+			mesh.rotation.x += 0.1
+		})*/
+		//////////////////////////////////////////////////////////////////////////////////
+		//		render the whole thing on the page
+		//////////////////////////////////////////////////////////////////////////////////
+		var stats = new Stats();
+		document.body.appendChild( stats.dom );
+		// render the scene
+		onRenderFcts.push(function(){
+			xmasTree.render();//renderer.render( scene, camera );
+			stats.update();
+		})
+		// run the rendering loop
+		var lastTimeMsec= null
+		requestAnimationFrame(function animate(nowMsec){
+			// keep looping
+			requestAnimationFrame( animate );
+			// measure time
+			lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+			var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+			lastTimeMsec	= nowMsec
+			// call each update function
+			onRenderFcts.forEach(function(onRenderFct){
+				onRenderFct(deltaMsec/1000, nowMsec/1000)
+			})
+			//xmasTree.render()
+		})
+    </script>
+</body>
+<html>
