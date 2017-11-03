@@ -239,7 +239,7 @@ THREE.ImageUtils.crossOrigin = '';
                         [0.80, 0.05, 0.5], sfTexture, 5
                     ]
                 ];
-				
+				this.snowflakes =  new THREE.Object3D();
                 for (i = 0; i < states.length; i++) 
 				{
                     color = states[i][0];
@@ -261,9 +261,9 @@ THREE.ImageUtils.crossOrigin = '';
                     particles.rotation.y = Math.random() * 10;
                     particles.rotation.z = Math.random() * 10;
 
-                    this.group.add(particles);
+                    this.snowflakes.add(particles);
                 }
-
+this.group.add(this.snowflakes);
                
 			   // Add lights:
 
@@ -370,7 +370,10 @@ THREE.ImageUtils.crossOrigin = '';
                 var timer = Date.now() * 0.00025;
 
                 //xmasTree.group.rotation.x += (xmasTree.targetRotation - xmasTree.group.rotation.y) * 0.01;
-				xmasTree.group.rotation.x +=(Math.sin(timer * 3) * 300);
+				//xmasTree.group.rotation.x +=(Math.sin(timer * 3) * 300);
+				
+				 xmasTree.snowflakes.position.y = Math.sin(timer * 7) * 300;
+                xmasTree.snowflakes.position.z = Math.cos(timer * 3) * 300;
 /*
                 xmasTree.particleLight.position.y = Math.sin(timer * 7) * 300;
                 xmasTree.particleLight.position.z = Math.cos(timer * 3) * 300;
