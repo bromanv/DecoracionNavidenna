@@ -321,9 +321,9 @@
                 //document.addEventListener('touchmove', this.onDocumentTouchMove, false);
                 //window.addEventListener('resize', this.onWindowResize, false);
 				//declared once at the top of your code
-				var axis = new THREE.Vector3(-1.5,0,0);//tilted a bit on x and y - feel free to plug your different axis here
-				//in your update/draw function				
-				this.group.rotateOnAxis(axis,1);
+				
+				this.three.rotateY(90);
+				
 				}
             },
             onWindowResize: function() {
@@ -335,6 +335,7 @@
                 xmasTree.camera.updateProjectionMatrix();
 
                 xmasTree.renderer.setSize(window.innerWidth - 20, window.innerHeight - 20);
+				
             },
             onDocumentMouseDown: function(event) {
                 event.preventDefault();
@@ -382,19 +383,23 @@
             },
             render: function() {
                 var timer = Date.now() * 0.00025;
-
-                //xmasTree.group.rotation.x += (xmasTree.targetRotation - xmasTree.group.rotation.y) * 0.01;
-				//xmasTree.group.rotation.x +=(Math.sin(timer * 3) * 300);
+				xmasTree.x += 0.01;
+				xmasTree.three.rotateY(0.01);
+				/*if(this.x<this.xL)
+					xmasTree.three.rotateZ(0.01);
+				else
+					xmasTree.three.rotateZ(0.01);*/
 				
-				 xmasTree.snowflakes.position.y -=  1;
-				 if(xmasTree.snowflakes.position.y<-1000)
-					xmasTree.snowflakes.position.y=0;
+				 xmasTree.snowflakes.position.z +=  1;
+				 if(xmasTree.snowflakes.position.z>1000)
+					xmasTree.snowflakes.position.z=0;
+					
                 //xmasTree.snowflakes.position.z =Math.abs(  Math.cos(timer * 3) * 300);
 /*
                 xmasTree.particleLight.position.y = Math.sin(timer * 7) * 300;
                 xmasTree.particleLight.position.z = Math.cos(timer * 3) * 300;
 */
-               xmasTree.camera.position.y = 0;
+               //xmasTree.camera.position.y = 0;
    //             xmasTree.camera.position.z = Math.sin(timer) * 500;
                 xmasTree.camera.lookAt(xmasTree.scene.position);
 
@@ -470,8 +475,7 @@
 		//          initialize arToolkitContext
 		////////////////////////////////////////////////////////////////////////////////	
 		// create atToolkitContext
-		var arToolkitContext = new THREEx.ArToolkitContext({
-			debug:true,
+		var arToolkitContext = new THREEx.ArToolkitContext({			
 			//cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
 			cameraParametersUrl: 'camera_para.dat.psd',
 			detectionMode: 'mono',
@@ -609,6 +613,6 @@ document.addEventListener('keydown', function(e) {
     top: 0;
     left: 0;
     z-index: 1000000;"
- onclick="javascript:toggleFullScreen()">Fullscreen 5</a>
+ onclick="javascript:toggleFullScreen()">Fullscreen 7</a>
 	</body>
 <html>
