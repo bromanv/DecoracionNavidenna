@@ -197,10 +197,7 @@
                 this.addBranch(5, 0, 160, -2, starOpts, this.materials[3], false);
 				this.group.add(this.three);
 				
-				//declared once at the top of your code
-				var axis = new THREE.Vector3(-1.5,0,0);//tilted a bit on x and y - feel free to plug your different axis here
-				//in your update/draw function				
-				//this.three.rotateOnAxis(axis,1);
+				
 
 				
                 // add the ground
@@ -323,6 +320,10 @@
                 //document.addEventListener('touchstart', this.onDocumentTouchStart, false);
                 //document.addEventListener('touchmove', this.onDocumentTouchMove, false);
                 //window.addEventListener('resize', this.onWindowResize, false);
+				//declared once at the top of your code
+				var axis = new THREE.Vector3(-1.5,0,0);//tilted a bit on x and y - feel free to plug your different axis here
+				//in your update/draw function				
+				this.group.rotateOnAxis(axis,1);
 				}
             },
             onWindowResize: function() {
