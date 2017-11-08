@@ -103,6 +103,9 @@
 
 
             init: function() {
+			if(this.group == null)
+			{
+			
 				THREE.ImageUtils.crossOrigin = '';
                 // prepare the container
                 //this.container = document.createElement('div');
@@ -320,6 +323,7 @@
                 //document.addEventListener('touchstart', this.onDocumentTouchStart, false);
                 //document.addEventListener('touchmove', this.onDocumentTouchMove, false);
                 //window.addEventListener('resize', this.onWindowResize, false);
+				}
             },
             onWindowResize: function() {
 
@@ -397,7 +401,7 @@
             }
         }
         // initialize and start animation
-        xmasTree.init();
+        //xmasTree.init();
         //xmasTree.animate();
 
  </script>
