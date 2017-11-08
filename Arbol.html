@@ -200,7 +200,7 @@
 				//declared once at the top of your code
 				var axis = new THREE.Vector3(-1.5,0,0);//tilted a bit on x and y - feel free to plug your different axis here
 				//in your update/draw function				
-				//this.three.rotateOnAxis(axis,1);
+				this.three.rotateOnAxis(axis,1);
 
 				
                 // add the ground
@@ -470,9 +470,10 @@
 		////////////////////////////////////////////////////////////////////////////////	
 		// create atToolkitContext
 		var arToolkitContext = new THREEx.ArToolkitContext({
+			debug:true,
 			//cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
 			cameraParametersUrl: 'camera_para.dat.psd',
-			detectionMode: 'color_and_matrix',
+			detectionMode: 'mono',
 			maxDetectionRate: 30,
 			canvasWidth: 80*3,
 			canvasHeight: 60*3,
@@ -607,6 +608,6 @@ document.addEventListener('keydown', function(e) {
     top: 0;
     left: 0;
     z-index: 1000000;"
- onclick="javascript:toggleFullScreen()">Fullscreen 3</a>
+ onclick="javascript:toggleFullScreen()">Fullscreen 4</a>
 	</body>
 <html>
