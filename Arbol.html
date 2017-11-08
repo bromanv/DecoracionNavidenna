@@ -481,8 +481,8 @@
 		// initialize it
 		arToolkitContext.init(function onCompleted(){
 			// copy projection matrix to camera
-			camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
-			//xmasTree.camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+			//camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+			xmasTree.camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
 		})
 		// update artoolkit on every frame
 		onRenderFcts.push(function(){
@@ -608,6 +608,6 @@ document.addEventListener('keydown', function(e) {
     top: 0;
     left: 0;
     z-index: 1000000;"
- onclick="javascript:toggleFullScreen()">Fullscreen 4</a>
+ onclick="javascript:toggleFullScreen()">Fullscreen 5</a>
 	</body>
 <html>
