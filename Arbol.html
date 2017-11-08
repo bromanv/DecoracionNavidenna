@@ -195,7 +195,7 @@
 				this.group.add(this.three);
 				
 				//declared once at the top of your code
-				var axis = new THREE.Vector3(1.5,0,0);//tilted a bit on x and y - feel free to plug your different axis here
+				var axis = new THREE.Vector3(-1.5,0,0);//tilted a bit on x and y - feel free to plug your different axis here
 				//in your update/draw function
 				
 				this.three.rotateOnAxis(axis,1);
@@ -272,7 +272,7 @@
 
                     this.snowflakes.add(particles);
                 }
-this.group.add(this.snowflakes);
+				this.group.add(this.snowflakes);
                
 			   // Add lights:
 
@@ -402,7 +402,7 @@ this.group.add(this.snowflakes);
         xmasTree.animate();
 
  </script>
-<script> 
+<p> 
 	   //////////////////////////////////////////////////////////////////////////////////
 		//		Init
 		//////////////////////////////////////////////////////////////////////////////////
@@ -598,12 +598,12 @@ document.addEventListener('keydown', function(e) {
   }
 }, false);
 
-    </script>
+    </p>
 <a href="javascript:void(0)" style="
     position: absolute;
     top: 0;
     left: 0;
     z-index: 1000000;"
- onclick="javascript:toggleFullScreen()">Fullscreen 2</a>
+ onclick="javascript:toggleFullScreen()">Fullscreen 3</a>
 	</body>
 <html>
