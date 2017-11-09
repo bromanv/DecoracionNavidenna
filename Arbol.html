@@ -79,7 +79,7 @@
                     if (rotate && i % 2 == 0) {
                         var sphGeometry = new THREE.SphereGeometry(8);
                         sphMesh = new THREE.Mesh(sphGeometry, this.materials[0]);
-                        sphMesh.position.set(Math.cos(a) * l * 1.25, y, Math.sin(a) * l * 1.25);
+                        sphMesh.position.set(Math.cos(a) * l * 1.25, y, Math.sin(a) * l * 1.25);						
                         this.three.add(sphMesh);
                     }
                 }
@@ -170,7 +170,7 @@
                 }));
 
                 // add the Trunk
-                var trunk = new THREE.Mesh(new THREE.CylinderGeometry(2, 20, 300, 30, 1, false), this.materials[2]);
+                var trunk = new THREE.Mesh(new THREE.CylinderGeometry(2, 50, 300, 30, 1, false), this.materials[2]);
 				this.three = new THREE.Object3D();
                 this.three.add(trunk);
 
@@ -248,6 +248,7 @@
                     ]
                 ];
 				this.snowflakes =  new THREE.Object3D();
+				
                 for (i = 0; i < states.length; i++) 
 				{
                     color = states[i][0];
@@ -276,18 +277,18 @@
 			   // Add lights:
 
                 // add ambient (global) light
-                this.scene.add(new THREE.AmbientLight(0x222222));
+                this.scene.add(new THREE.AmbientLight(0x404040,1));
 
                 // add particle of light
                 this.particleLight = new THREE.Mesh(new THREE.SphereGeometry(5, 10, 10), new THREE.MeshBasicMaterial({
                     color: 0xffffff
                 }));
                 this.particleLight.position.y = 250;
-                this.group.add(this.particleLight);
+                //this.three.add(this.particleLight);
 
                 // add flying pint light
-                pointLight = new THREE.PointLight(0xffffff, 1, 1000);
-                this.group.add(pointLight);
+                pointLight = new THREE.PointLight(0xffffff, 1, 1000,2);
+                this.three.add(pointLight);
 
                 pointLight.position = this.particleLight.position;
 
@@ -384,7 +385,7 @@
             render: function() {
                 var timer = Date.now() * 0.00025;
 				xmasTree.x += 0.01;
-				xmasTree.three.rotateY(0.01);
+				xmasTree.three.rotateY(0.001);
 				/*if(this.x<this.xL)
 					xmasTree.three.rotateZ(0.01);
 				else
@@ -407,7 +408,7 @@
             }
         }
         // initialize and start animation
-        //xmasTree.init();
+        xmasTree.init();
         //xmasTree.animate();
 
  </script>
@@ -416,7 +417,7 @@
 		//		Init
 		//////////////////////////////////////////////////////////////////////////////////
 		// init renderer
-		xmasTree.init();
+		//xmasTree.init();
 		var renderer	= new THREE.WebGLRenderer({
 			//antialias	: true,
 			alpha: true
@@ -465,8 +466,8 @@
 		})
 		function onResize(){
 			arToolkitSource.onResize()	
-			//arToolkitSource.copySizeTo(renderer.domElement)
-			arToolkitSource.copySizeTo(xmasTree.renderer.domElement)			
+			arToolkitSource.copySizeTo(renderer.domElement)
+			//arToolkitSource.copySizeTo(xmasTree.renderer.domElement)			
 			if( arToolkitContext.arController !== null ){
 				arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
 			}	
@@ -479,15 +480,15 @@
 			//cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
 			cameraParametersUrl: 'camera_para.dat.psd',
 			detectionMode: 'mono',
-			maxDetectionRate: 30,
-			canvasWidth: 80*3,
-			canvasHeight: 60*3,
+			maxDetectionRate: 1,
+			canvasWidth: 60*3,
+			canvasHeight: 80*3,
 		})
 		// initialize it
 		arToolkitContext.init(function onCompleted(){
 			// copy projection matrix to camera
-			//camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
-			xmasTree.camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+			camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+			//xmasTree.camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
 		})
 		// update artoolkit on every frame
 		onRenderFcts.push(function(){
@@ -503,8 +504,8 @@
 		var markerRoot = new THREE.Group
 		scene.add(markerRoot);		
 		var artoolkitMarker = new THREEx.ArMarkerControls(arToolkitContext, 
-		//markerRoot 
-		xmasTree.group
+		markerRoot 
+		//xmasTree.group
 		, {
 			type : 'pattern',
 			patternUrl : 'patt-gpC.psd',
@@ -518,9 +519,11 @@
 			lerpQuaternion: 0.3,
 			lerpScale: 1,
 		})
+		smoothedControls.addEventListener('becameVisible',function(e){xmasTree.doRender=true;});
+		smoothedControls.addEventListener('becameUnVisible',function(e){xmasTree.doRender=false;});
 		onRenderFcts.push(function(delta){
-			//smoothedControls.update(markerRoot);
-			smoothedControls.update(xmasTree.group)
+			smoothedControls.update(markerRoot);
+			//smoothedControls.update(xmasTree.group)
 		})
 		//////////////////////////////////////////////////////////////////////////////////
 		//		add an object in the scene
@@ -551,11 +554,19 @@
 		//////////////////////////////////////////////////////////////////////////////////
 		//		render the whole thing on the page
 		//////////////////////////////////////////////////////////////////////////////////
-		//var stats = new Stats();
+		var stats = new Stats();
 		//document.body.appendChild( stats.dom );
 		// render the scene
 		onRenderFcts.push(function(){
-			xmasTree.render();//renderer.render( scene, camera );
+			if(xmasTree.doRender)
+			{
+				xmasTree.renderer.domElement.style.display = 'block';
+				xmasTree.render();//renderer.render( scene, camera );
+			}
+			else
+			{
+			xmasTree.renderer.domElement.style.display = 'none';
+			}
 			//stats.update();
 		})
 		// run the rendering loop
