@@ -239,6 +239,8 @@ var xmasTree = {
 			xmasTree.snowflakes.position.z = 0;
 		xmasTree.camera.lookAt(xmasTree.scene.position);
 
+		if(xmasMessage)
+			xmasMessage.group.rotateY(0.005);
 		xmasTree.renderer.render(xmasTree.scene, xmasTree.camera);
 	}
 }
