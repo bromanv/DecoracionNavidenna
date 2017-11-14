@@ -282,9 +282,9 @@ var xmasTree = {
 		var timer = Date.now() * 0.00025;
 		xmasTree.three.rotateY(0.005);
 
-		xmasTree.snowflakes.position.z += 1;
-		if (xmasTree.snowflakes.position.z > 1000)
-			xmasTree.snowflakes.position.z = 0;
+		xmasTree.snowflakes.position.y -= 1;
+		if (xmasTree.snowflakes.position.y < -800)
+			xmasTree.snowflakes.position.y = 0;
 		xmasTree.camera.lookAt(xmasTree.scene.position);
 
 		if(xmasMessage)
