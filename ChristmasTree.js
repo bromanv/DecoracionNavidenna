@@ -267,7 +267,8 @@ var xmasTree = {
 				plane.overdraw = true;
 				plane.rotateY(-0.05);
 				//plane.position.set(( pos%2?-1:1)*Math.cos(a) * l * 1.25+(100*( pos%2?-1:1)), -125+(12*pos),  (pos%2?-1:1)*Math.sin(a) * l * 1.25);
-				plane.position.set(Math.cos(a) * l * 5.6 , -100,  (pos%2?-1:1) * Math.sin(a) * l * 5.6);
+				console.log(imgs[pos]+"-> x:"+(Math.cos(a) * l * 5.6)+" z:"+((pos%2?-1:1) * Math.sin(a) * l * 5.6));
+				plane.position.set(Math.cos(a) * l * 5.6 +( pos ==1?-15:0), -100,  (pos%2?-1:1) * Math.sin(a) * l * 5.6+( pos ==1?-15:0));
 				this.three.add(plane);			
 			}
 		}

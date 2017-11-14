@@ -1,7 +1,7 @@
 var xmasMessage = {
 	text : "Feliz Navidad\nles desea I + D\nPrides",
-	height : 20,
-	size : 10,
+	height : 2,
+	size : 18,
 	hover : 10,
 	curveSegments : 4,
 	bevelThickness : 2,
@@ -61,11 +61,11 @@ var xmasMessage = {
 			this.text = decodeURI( texthash );
 			this.updatePermalink();
 		} else {
-			pointLight.color.setHSL( 0.6666666666666667, 1, 1 );
+			pointLight.color.setHSL( 0.1, 1, 1 );
 			this.hex = this.decimalToHex( pointLight.color.getHex() );
 		}
 		materials = [
-			new THREE.MeshPhongMaterial( { color: 0x0033ff, flatShading: true } ), // front
+			new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: true } ), // front
 			new THREE.MeshPhongMaterial( { color: 0x94a9ff } ) // side
 		];
 		
@@ -75,8 +75,8 @@ var xmasMessage = {
 		this.loadFont();
 		
 		var plane = new THREE.Mesh(
-			new THREE.PlaneBufferGeometry( 10000, 10000 ),
-			new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.5, transparent: true } )
+			new THREE.PlaneBufferGeometry( 100, 100 ),
+			new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 1, transparent: true } )
 		);
 		
 		plane.position.y = 100;
@@ -147,19 +147,19 @@ var xmasMessage = {
 		}
 		var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
 		this.textMesh1 = new THREE.Mesh( textGeo, materials );
-		this.textMesh1.position.x = 100;
+		this.textMesh1.position.x = 80;
 		this.textMesh1.position.y = this.hover;
 		this.textMesh1.position.z = 0;
 		this.textMesh1.rotation.x = 0;
 		this.textMesh1.rotation.y = Math.PI * 2;
 		this.group.add( this.textMesh1 );
-		if ( this.mirror ) {
+		if ( !this.mirror ) {
 			this.textMesh2 = new THREE.Mesh( textGeo, materials );
-			this.textMesh2.position.x = centerOffset;
-			this.textMesh2.position.y = -this.hover;
+			this.textMesh2.position.x = -80;
+			this.textMesh2.position.y = this.hover;
 			this.textMesh2.position.z = this.height;
-			this.textMesh2.rotation.x = Math.PI;
-			this.textMesh2.rotation.y = Math.PI * 2;
+			this.textMesh2.rotation.y = Math.PI;
+			this.textMesh2.rotation.z = Math.PI * 2;
 			this.group.add( this.textMesh2 );
 		}
 	},
