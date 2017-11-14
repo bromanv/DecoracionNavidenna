@@ -1,5 +1,5 @@
 var xmasMessage = {
-	text : "Feliz Navidad\nles desea I + D, Prides  ",
+	text : "Feliz Navidad\nles desea I + D\nPrides",
 	height : 20,
 	size : 10,
 	hover : 10,
@@ -147,7 +147,7 @@ var xmasMessage = {
 		}
 		var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
 		this.textMesh1 = new THREE.Mesh( textGeo, materials );
-		this.textMesh1.position.x = 50;
+		this.textMesh1.position.x = 100;
 		this.textMesh1.position.y = this.hover;
 		this.textMesh1.position.z = 0;
 		this.textMesh1.rotation.x = 0;

@@ -223,6 +223,53 @@ var xmasTree = {
 			this.renderer.domElement.style.top = '0px'
 			this.renderer.domElement.style.left = '0px'
 			document.body.appendChild(this.renderer.domElement)
+			
+			///imagenes
+			var imgs = 
+			[
+				"aaron.jpg",
+				"ana.jpg",
+				"andres.jpg",
+				"byron.jpg",
+				"esteban.jpg",
+				"jordan.jpg",				
+				"kevin.jpg",
+				"luisDiego.jpg",
+				"ronald.jpg",								
+				"ronny.jpg",
+				//"ronny.jpg",
+				"walter.jpg",
+				"william.jpg",
+				/*
+				"william.jpg",
+				"walter.jpg",
+				"ronny.jpg",
+				"ronny.jpg",
+				"ronald.jpg",								
+				"kevin.jpg",				
+				"jordan.jpg",
+				"luisDiego.jpg",
+				"esteban.jpg",
+				"byron.jpg",
+				"andres.jpg",
+				"ana.jpg",
+				"aaron.jpg"*/
+			];
+			var l = imgs.length*2;
+			for(var pos  in imgs)
+			{
+				var img = new THREE.MeshBasicMaterial({ 
+							map:THREE.ImageUtils.loadTexture('img/'+imgs[pos])
+				});
+				img.map.needsUpdate = true;
+				var a = pos / imgs.length * Math.PI
+				var plane = new THREE.Mesh(new THREE.BoxGeometry(35,35,35),img);
+				plane.overdraw = true;
+				plane.rotateY(-0.05);
+				//plane.position.set(( pos%2?-1:1)*Math.cos(a) * l * 1.25+(100*( pos%2?-1:1)), -125+(12*pos),  (pos%2?-1:1)*Math.sin(a) * l * 1.25);
+				plane.position.set(Math.cos(a) * l * 5.6 , -100,  (pos%2?-1:1) * Math.sin(a) * l * 5.6);
+				this.three.add(plane);			
+			}
 		}
 	},
 
