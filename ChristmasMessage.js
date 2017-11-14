@@ -1,7 +1,7 @@
 var xmasMessage = {
-	text : "Feliz Navidad\nles desea I + D\nPrides",
+	text : "Feliz\n Navidad!\n  I+D Prides.",
 	height : 2,
-	size : 17,
+	size : 15,
 	hover : 10,
 	curveSegments : 4,
 	bevelThickness : 2,
@@ -9,7 +9,7 @@ var xmasMessage = {
 	bevelSegments : 3,
 	bevelEnabled : true,
 	font : undefined,
-	fontName : "helvetiker", // helvetiker, optimer, gentilis, droid sans, droid serif
+	fontName : "gentilis", // helvetiker, optimer, gentilis, droid sans, droid serif
 	fontWeight : "regular", // regular bold
 	mirror : false,
 	fontMap : {
@@ -61,12 +61,12 @@ var xmasMessage = {
 			this.text = decodeURI( texthash );
 			this.updatePermalink();
 		} else {
-			pointLight.color.setHSL( 0.1, 1, 1 );
+			pointLight.color.setHSL( 0.1305555555555556, 0.86, 0.63 );
 			this.hex = this.decimalToHex( pointLight.color.getHex() );
 		}
 		materials = [
-			new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: true } ), // front
-			new THREE.MeshPhongMaterial( { color: 0x94a9ff } ) // side
+			new THREE.MeshPhongMaterial( { color: 0xf2cf50, flatShading: true } ), // front
+			new THREE.MeshPhongMaterial( { color: 0x856a0a } ) // side
 		];
 		
 		this.group = new THREE.Group();
@@ -147,7 +147,7 @@ var xmasMessage = {
 		}
 		var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
 		this.textMesh1 = new THREE.Mesh( textGeo, materials );
-		this.textMesh1.position.x = 55;
+		this.textMesh1.position.x = 45;
 		this.textMesh1.position.y = this.hover;
 		this.textMesh1.position.z = 0;
 		this.textMesh1.rotation.x = 0;
@@ -155,7 +155,7 @@ var xmasMessage = {
 		this.group.add( this.textMesh1 );
 		if ( !this.mirror ) {
 			this.textMesh2 = new THREE.Mesh( textGeo, materials );
-			this.textMesh2.position.x = -55;
+			this.textMesh2.position.x = -45;
 			this.textMesh2.position.y = this.hover;
 			this.textMesh2.position.z = this.height;
 			this.textMesh2.rotation.y = Math.PI;

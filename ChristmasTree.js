@@ -191,7 +191,7 @@ var xmasTree = {
 			// Add lights:
 
 			// add ambient (global) light
-			this.scene.add(new THREE.AmbientLight(0x404040, 1));
+			this.scene.add(new THREE.AmbientLight(0xffffff, 1));
 
 			// add particle of light
 			this.particleLight = new THREE.Mesh(new THREE.SphereGeometry(5, 10, 10), new THREE.MeshBasicMaterial({
