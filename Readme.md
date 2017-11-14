@@ -1,6 +1,6 @@
 # Decoración Navideña 
 
-Arbol de navidad decorado, el cual se muestra mediante Realidad Aumentada
+Arbol de navidad decorado, el cual se muestra mediante Realidad Aumentada, se utiliza un marcador personalizado para iniciar o detener la animacion.
 
 ## Getting Started
 

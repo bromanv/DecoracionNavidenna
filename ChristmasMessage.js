@@ -1,7 +1,7 @@
 var xmasMessage = {
 	text : "Feliz Navidad\nles desea I + D\nPrides",
 	height : 2,
-	size : 18,
+	size : 17,
 	hover : 10,
 	curveSegments : 4,
 	bevelThickness : 2,
@@ -147,7 +147,7 @@ var xmasMessage = {
 		}
 		var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
 		this.textMesh1 = new THREE.Mesh( textGeo, materials );
-		this.textMesh1.position.x = 80;
+		this.textMesh1.position.x = 55;
 		this.textMesh1.position.y = this.hover;
 		this.textMesh1.position.z = 0;
 		this.textMesh1.rotation.x = 0;
@@ -155,7 +155,7 @@ var xmasMessage = {
 		this.group.add( this.textMesh1 );
 		if ( !this.mirror ) {
 			this.textMesh2 = new THREE.Mesh( textGeo, materials );
-			this.textMesh2.position.x = -80;
+			this.textMesh2.position.x = -55;
 			this.textMesh2.position.y = this.hover;
 			this.textMesh2.position.z = this.height;
 			this.textMesh2.rotation.y = Math.PI;
