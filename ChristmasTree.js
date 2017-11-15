@@ -237,7 +237,7 @@ var xmasTree = {
 				"luisDiego.jpg",
 				"ronald.jpg",								
 				"ronny.jpg",
-				//"ronny.jpg",
+				"rene.jpg",
 				"walter.jpg",
 				"william.jpg",
 				/*
@@ -255,7 +255,42 @@ var xmasTree = {
 				"ana.jpg",
 				"aaron.jpg"*/
 			];
+			/*var cuadros = [	
+				{x: 169, z: 0},
+				{x: 149.0891671450028, z: -55.44434726459726}
+				{x: 149.64206833539248, z: 78.53821607539689}
+				{x: 126.49831644091608, z: -112.06772924269438}
+				{x: 96.00294219756533, z: 139.08427333602793}
+				{x: 59.92822591018851, z: -158.0177450138351}
+				{x: 20.37069896314959, z: 167.7677997225711}
+				{x: -20.370698963149568, z: -167.7677997225711}
+				{x: -59.92822591018853, z: 158.0177450138351}
+				{x: -96.00294219756532, z: -139.08427333602793}
+				{x: -126.49831644091611, z: 112.06772924269438}
+				{x: -149.64206833539245, z: -78.5382160753969}
+				{x: -164.0891671450028, z: 40.44434726459725}
+			];*/
+			
+			var cuadros = [	
+				{x: 0, z: 2},//1
+				{x: 0.9, z: 1.8},
+				{x: 1.6, z:  1.2},
+				{x: 2, z: 0.4},
+				{x: 2, z: -0.4},
+				{x: 1.6, z: -1.3},
+				{x: 0.9, z: -1.8},
+				{x: 0, z: -2},
+				{x: -0.9, z: -1.8},
+				{x: -1.6, z:  -1.3},
+				{x: -2, z: -0.5},
+				{x: -2, z: 0.4},
+				{x: -1.6, z:  1.2},
+				{x: -0.9, z: -1.8},
+				
+				{x: 169, z: 0},
+			];
 			var l = imgs.length*2;
+			var m=70;
 			for(var pos  in imgs)
 			{
 				var img = new THREE.MeshBasicMaterial({ 
@@ -263,14 +298,17 @@ var xmasTree = {
 				});
 				img.map.needsUpdate = true;
 				var a = pos / imgs.length * Math.PI
-				var plane = new THREE.Mesh(new THREE.BoxGeometry(35,35,35),img);
+				var plane = new THREE.Mesh(new THREE.BoxGeometry(50,50,50),img);
 				plane.overdraw = true;
 				plane.rotateY(-0.05);
 				//plane.position.set(( pos%2?-1:1)*Math.cos(a) * l * 1.25+(100*( pos%2?-1:1)), -125+(12*pos),  (pos%2?-1:1)*Math.sin(a) * l * 1.25);
-				console.log(imgs[pos]+"-> x:"+(Math.cos(a) * l * 5.6)+" z:"+((pos%2?-1:1) * Math.sin(a) * l * 5.6));
-				plane.position.set(Math.cos(a) * l * 5.6 +( pos ==1?-15:0), -100,  (pos%2?-1:1) * Math.sin(a) * l * 5.6+( pos ==1?-15:0));
+				//console.log(imgs[pos]+"-> x:"+(Math.cos(a) * l * 6.5)+" z:"+((pos%2?-1:1) * Math.sin(a) * l * 6.5));
+				//cuadros.push( { x: Math.cos(a) * l * 6.5 +( pos ==1?-15:0), z: (pos%2?-1:1) * Math.sin(a) * l * 6.5+( pos ==1?-15:0)});
+				plane.position.set(cuadros[pos].x*m, -100,  cuadros[pos].z*m);
 				this.three.add(plane);			
 			}
+			console.log(cuadros);
+			
 		}
 	},
 
